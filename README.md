@@ -7,5 +7,5 @@ Allows for variable dimensions of the strip, as well as different sized stock pa
 Requires Python 3.8, as well as libraries mido, ezdxf, and pretty_midi to be installed on the system running the program
 
 # How to Use
-Before starting, edit the global variables above the dashed lines to match the specifications of the music box and paper you will be using. Next, run the gui.py file, and a subdirectory should be created with your .dxf files in the same directory as gui.py. I plan on creating an actual GUI in the future to make this process easier.
+Before starting, edit the global variables above the dashed lines to match the specifications of the music box and paper you will be using. Next, run the gui.py file, and a subdirectory should be created with your .dxf files in the same directory as gui.py. I plan on creating an actual GUI in the future to make this process easier. You can test these features using the midi files provided in /midi.
 

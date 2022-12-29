@@ -1,5 +1,5 @@
 # midibox
-Turns .midi files into .dxf files, primarily for music box paper strips with a high degree of variablility. 
+Turns .midi files into .dxf files, primarily for music box paper strips with a high degree of customizability. 
 
 Allows for variable dimensions of the strip, as well as different sized stock paper that will be cut. Will output a new .dxf file for each page of paper needed. Currently, these settings need to be edited at the top of the python file.
 

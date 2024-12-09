@@ -1,0 +1,7 @@
+setuptools
+pretty_midi
+mido
+ezdxf
+pillow
+matplotlib
+svgwrite

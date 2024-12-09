@@ -6,17 +6,18 @@ from ezdxf import units
 import os
 
 #name of midi file to be processed. Name gets reused as dxf file name. Must be in subdirectory "midi/" in the same directory as python file 
-docName = 'midi/your_name.mid'
+docName = 'midi/Avery_part-2_12-8-24.mid'
 
 #all units in mm
-distance_between_beats = 15 
+distance_between_beats = 10
 bottom_padding = 5.6 #distance between bottom of strip and lowest note
 vertical_distance_between_notes = 2.00 #distance between each note on the strip vertically
 strip_height = 70.0 #height of the strip entering music box
 paper_lead = 150.0 #distance between start of strip and start of music
+hole_size = 0.9
 
-paper_max_width = 11*25.4 #max horizontal width of paper being cut
-paper_max_height = 8.5*25.4 #max vertical height of paper being cut
+paper_max_width = 13.7*25.4 #max horizontal width of paper being cut
+paper_max_height = 10.9*25.4 #max vertical height of paper being cut
 
 #list of notes currently available on music box
 note_names_available = ['F3','G3','C4','D4','E4','F4','G4','A4','A#4','B4','C5','C#5','D5','D#5','E5','F5','F#5','G5','G#5','A5','A#5','B5','C6','C#6','D6','D#6','E6','F6','G6','A6']
@@ -63,7 +64,7 @@ def main():
         docs[-1].units = units.MM
         mspLines = docs[-1].modelspace()
         mspCircles = docs[-1].modelspace()
-        docs[-1].layers.add(name="Numbers", color=7)
+        docs[-1].layers.add(name="Numbers", color=1)
 
         heightOffset = 0
 
@@ -74,13 +75,14 @@ def main():
             while(i < len(note_positions) and y_position < paper_max_width):
                 y_position = note_positions[i].y-widthOffset+paper_lead
                 if y_position < paper_max_width:
-                    mspCircles.add_circle(((y_position), note_positions[i].x+heightOffset),.9).rgb = (255, 0, 0)
+                    mspCircles.add_circle(((y_position), note_positions[i].x+heightOffset),hole_size).rgb = (255, 0, 0)
                     i += 1
             
             #add strip number to bottom corner
             number = mspLines.add_text(strip_number).set_placement(
                 (2, 3+heightOffset)
             )
+
             number.dxf.layer = "Numbers"
 
             if (strip_number == 0):

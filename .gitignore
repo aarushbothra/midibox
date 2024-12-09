@@ -1,2 +1,4 @@
 __pycache__
 *.dxf
+midi/custom
+*_dxf_files

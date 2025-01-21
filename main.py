@@ -6,10 +6,10 @@ from ezdxf import units
 import os
 
 #name of midi file to be processed. Name gets reused as dxf file name. Must be in subdirectory "midi/" in the same directory as python file 
-docName = 'midi/Avery_part-2_12-8-24.mid'
+docName = 'midi/your_name.MID'
 
 #all units in mm
-distance_between_beats = 10
+distance_between_beats = 10.0 #distance at 120bpm
 bottom_padding = 5.6 #distance between bottom of strip and lowest note
 vertical_distance_between_notes = 2.00 #distance between each note on the strip vertically
 strip_height = 70.0 #height of the strip entering music box
@@ -25,9 +25,10 @@ note_names_available = ['F3','G3','C4','D4','E4','F4','G4','A4','A#4','B4','C5',
 # -----------------------------------------END OF GLOBALS----------------------------------------------------------
 
 def main():
+    global distance_between_beats
     mid = MidiFile(docName)
 
-    #all midi note on and off events
+    # #all midi note on and off events
     note_positions_unclean = []
 
     @dataclass
@@ -38,20 +39,47 @@ def main():
         msg_type: str
         velocity: int
 
-    total_time = 0
+    first_tempo_received = False
+    current_tempo = 0.0
+    total_time = 0.0
     for msg in mid:
-        if msg.type == 'note_on' or msg.type == 'note_off':
+        # print("msg type:", msg.type, "msg time:" , msg.time)
+        
+        if msg.type == 'set_tempo':
+            if not first_tempo_received:
+                first_tempo_received = True
+                current_tempo = msg.tempo
+            else:
+                current_tempo = msg.tempo
+
+        if current_tempo != 0:
+            total_time += msg.time * (current_tempo/500000)
+        else:
             total_time += msg.time
+        
+
+        if msg.type == 'note_on' or msg.type == 'note_off':
             x = -1
             if pretty_midi.note_number_to_name(msg.note) in note_names_available:
                 x = (note_names_available.index(pretty_midi.note_number_to_name(msg.note))*vertical_distance_between_notes)+bottom_padding
             else:
                 print("Note unavailable:", pretty_midi.note_number_to_name(msg.note))
-            note_positions_unclean.append(note(msg.note,x,total_time*distance_between_beats*2,msg.type,msg.velocity))
+             
+            note_positions_unclean.append(note(msg.note,x,total_time*distance_between_beats*2.0,msg.type,msg.velocity))
+            
+        
+        
+        
 
-  
+    
     note_positions = list(filter(lambda item: item.velocity != 0 and item.x != -1 and item.msg_type != 'note_off', note_positions_unclean)) #remove midi notes represent the end of notes or don't exist in note_names_available
 
+    # midi_data = pretty_midi.PrettyMIDI(docName)
+
+    # for midiNote in midi_data:
+        
+
+    # note_positions = []
     print("Notes:", len(note_positions))
     docs = []
     heightOffset = 0

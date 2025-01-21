@@ -8,13 +8,13 @@ import os
 #name of midi file to be processed. Name gets reused as dxf file name. Must be in subdirectory "midi/" in the same directory as python file 
 docName = 'midi/your_name.MID'
 
-#all units in mm
+#all units in mm, must be float values
 distance_between_beats = 10.0 #distance at 120bpm
 bottom_padding = 5.6 #distance between bottom of strip and lowest note
 vertical_distance_between_notes = 2.00 #distance between each note on the strip vertically
 strip_height = 70.0 #height of the strip entering music box
 paper_lead = 150.0 #distance between start of strip and start of music
-hole_size = 0.9
+hole_radius = 1.0
 
 paper_max_width = 13.7*25.4 #max horizontal width of paper being cut
 paper_max_height = 10.9*25.4 #max vertical height of paper being cut
@@ -48,11 +48,10 @@ def main():
         if msg.type == 'set_tempo':
             if not first_tempo_received:
                 first_tempo_received = True
-                current_tempo = msg.tempo
-            else:
-                current_tempo = msg.tempo
+            
+            current_tempo = msg.tempo
 
-        if current_tempo != 0:
+        if first_tempo_received:
             total_time += msg.time * (current_tempo/500000)
         else:
             total_time += msg.time
@@ -103,7 +102,7 @@ def main():
             while(i < len(note_positions) and y_position < paper_max_width):
                 y_position = note_positions[i].y-widthOffset+paper_lead
                 if y_position < paper_max_width:
-                    mspCircles.add_circle(((y_position), note_positions[i].x+heightOffset),hole_size).rgb = (255, 0, 0)
+                    mspCircles.add_circle(((y_position), note_positions[i].x+heightOffset),hole_radius).rgb = (255, 0, 0)
                     i += 1
             
             #add strip number to bottom corner
